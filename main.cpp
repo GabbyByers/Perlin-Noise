@@ -345,7 +345,7 @@ int main()
     sf::Clock clock;
 
     int size = 800;
-    int grid = 200;
+    int grid = 100;
     std::vector<std::vector<double>> noiseMap;
     PerlinNoise noise;
     noiseMap = noise.Generate(size, grid);
@@ -377,7 +377,7 @@ int main()
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             double value = noiseMap[i][j];
-            int color = 128 + value * 5000000;
+            int color = 128 + value * 250;
             if (color < 0) { color = 0; }
             if (color > 255) { color = 255; }
             uint8_t rgb = color;
@@ -397,8 +397,8 @@ int main()
 
         window.clear(sf::Color(0, 0, 0));
         window.draw(&pixelVertices[0], pixelVertices.size(), sf::Points);
-        //window.draw(&gridVertices[0], gridVertices.size(), sf::Lines);
-        //window.draw(&gradientVertices[0], gradientVertices.size(), sf::Lines);
+        window.draw(&gridVertices[0], gridVertices.size(), sf::Lines);
+        window.draw(&gradientVertices[0], gradientVertices.size(), sf::Lines);
         displayFPS.drawFPS(window, clock);
         window.display();
     }
