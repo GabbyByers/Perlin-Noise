@@ -182,6 +182,8 @@ public:
     std::vector<std::vector<PerlinVec3>> gradientVectors;
     std::vector<std::vector<PerlinStruct>> pixels;
 
+    bool contain = true;
+
     double pi = 3.1415926536897;
 
     PerlinNoise() {}
@@ -212,6 +214,47 @@ public:
             std::vector<PerlinVec3> column;
             for (int j = 0; j < corners; j++) {
                 PerlinVec3 gradientVector;
+                if (!contain) {
+                    gradientVector.Randomize();
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
+                if (i == 0 && j == 0) {
+                    gradientVector.x = 1;
+                    gradientVector.y = 1;
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
+                if (i == corners - 1 && j == 0) {
+                    gradientVector.x = -1;
+                    gradientVector.y = 1;
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
+                if (i == 0 && j == corners - 1) {
+                    gradientVector.x = 1;
+                    gradientVector.y = -1;
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
+                if (i == corners - 1 && j == corners - 1) {
+                    gradientVector.x = -1;
+                    gradientVector.y = -1;
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
+                if (i == 0) {
+                    gradientVector.x = 1;
+                    gradientVector.y = 0;
+                    gradientVector.Normalize();
+                    column.push_back(gradientVector);
+                    continue;
+                }
                 gradientVector.Randomize();
                 gradientVector.Normalize();
                 column.push_back(gradientVector);
