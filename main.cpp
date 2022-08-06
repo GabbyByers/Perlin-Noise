@@ -330,47 +330,6 @@ int main()
     sf::RenderWindow window(sf::VideoMode(game.screenWidth, game.screenHeight), "Hello SFML", sf::Style::Close);
     sf::Clock clock;
 
-    int size = 800;
-    int grid = 100;
-    std::vector<std::vector<double>> noiseMap;
-    PerlinNoise noise;
-    noiseMap = noise.Generate(size, grid);
-
-    // draw grid
-    std::vector<sf::Vertex> gridVertices;
-    for (int i = 0; i < (size / grid) + 1; i++) {
-        gridVertices.push_back(sf::Vertex(sf::Vector2f(100 + i * grid, 100), sf::Color(255, 255, 255)));
-        gridVertices.push_back(sf::Vertex(sf::Vector2f(100 + i * grid, 100 + size), sf::Color(255, 255, 255)));
-    }
-    for (int i = 0; i < (size / grid) + 1; i++) {
-        gridVertices.push_back(sf::Vertex(sf::Vector2f(100, 100 + i * grid), sf::Color(255, 255, 255)));
-        gridVertices.push_back(sf::Vertex(sf::Vector2f(100 + size, 100 + i * grid), sf::Color(255, 255, 255)));
-    }
-
-    // draw gradients
-    const std::vector<std::vector<PerlinVec3>>& gradientVectors = noise.gradientVectors;
-    std::vector<sf::Vertex> gradientVertices;
-    for (int i = 0; i < (size / grid) + 1; i++) {
-        for (int j = 0; j < (size / grid) + 1; j++) {
-            const PerlinVec3& gradient = gradientVectors[i][j];
-            gradientVertices.push_back(sf::Vertex(sf::Vector2f(100 + i * grid, 100 + j * grid), sf::Color(0, 255, 0)));
-            gradientVertices.push_back(sf::Vertex(sf::Vector2f(100 + i * grid + gradient.x * grid, 100 + j * grid + gradient.y * grid), sf::Color(0, 255, 0)));
-        }
-    }
-
-    // draw pixels
-    std::vector<sf::Vertex> pixelVertices;
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            double value = noiseMap[i][j];
-            int color = 128 + value * 200;
-            if (color < 0) { color = 0; }
-            if (color > 255) { color = 255; }
-            uint8_t rgb = color;
-            pixelVertices.push_back(sf::Vertex(sf::Vector2f(100 + i, 100 + j), sf::Color(rgb, rgb, rgb)));
-        }
-    }
-
     while (window.isOpen()) {
         mouse.setMouseProperties(sf::Mouse::getPosition(window));
 
@@ -382,16 +341,8 @@ int main()
         }
 
         window.clear(sf::Color(0, 0, 0));
-        window.draw(&pixelVertices[0], pixelVertices.size(), sf::Points);
-        window.draw(&gridVertices[0], gridVertices.size(), sf::Lines);
-        window.draw(&gradientVertices[0], gradientVertices.size(), sf::Lines);
         displayFPS.drawFPS(window, clock);
         window.display();
     }
     return 0;
 }
-
-
-//std::cerr << "\rGenerating Image: " << v << '/' << (canvas_height - 1) << std::flush;
-//std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
