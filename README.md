@@ -1,2 +1,2 @@
 # Perlin-Noise
-Perlin Noise Implemented in C++ / SFML
+Perlin Noise Implemented in C++
