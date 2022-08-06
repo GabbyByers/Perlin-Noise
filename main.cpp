@@ -195,7 +195,6 @@ public:
         PixelsGetGradientVectors();
         CalculateDotProducts();
         Interpolate();
-        _FindClosestGradient();
         std::vector<std::vector<double>> noiseMap;
         noiseMap = GetValues();
         return noiseMap;
@@ -309,19 +308,6 @@ public:
         return ((sin((value * pi) - (pi / 2))) / 2) + 0.5;
     }
 
-    void _FindClosestGradient() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                PerlinStruct& pixel = pixels[i][j];
-                int half = grid / 2;
-                if ((pixel.local_x <  half) && (pixel.local_y <  half)) { pixel.closest = 'a'; }
-                if ((pixel.local_x >= half) && (pixel.local_y <  half)) { pixel.closest = 'b'; }
-                if ((pixel.local_x >= half) && (pixel.local_y >= half)) { pixel.closest = 'c'; }
-                if ((pixel.local_x <  half) && (pixel.local_y >= half)) { pixel.closest = 'd'; }
-            }
-        }
-    }
-
     std::vector<std::vector<double>> GetValues() {
         std::vector<std::vector<double>> noiseMap;
         for (int i = 0; i < size; i++) {
@@ -329,8 +315,8 @@ public:
             for (int j = 0; j < size; j++) {
                 PerlinStruct& pixel = pixels[i][j];
                 double value = pixel.value;
-                if (value > 1.0) { value = 1.0; }
-                if (value < -1.0) { value = -1.0; }
+                if (value >= 1.0) { value = 1.0; }
+                if (value <= -1.0) { value = -1.0; }
                 column.push_back(value);
             }
             noiseMap.push_back(column);
@@ -377,7 +363,7 @@ int main()
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             double value = noiseMap[i][j];
-            int color = 128 + value * 250;
+            int color = 128 + value * 200;
             if (color < 0) { color = 0; }
             if (color > 255) { color = 255; }
             uint8_t rgb = color;
